@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Access System</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        video {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="email"] {
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container center">
+        <h1>🔒Face Access System</h1>
+        <p class="subtitle">Secure access using facial recognition</p>
+
+        <!-- Email Input -->
+        <input type="text" id="visitor_name" placeholder="Enter your name" required>
+        <input type="email" id="visitor_email" placeholder="Enter your email" required>
+
+
+
+        <!-- Webcam Feed -->
+        <video id="video" autoplay></video>
+        <canvas id="canvas"></canvas>
+
+        <!-- Voice Mode -->
+        <label for="voice_mode">🗣️ Select Voice Mode:</label>
+        <select id="voice_mode">
+            <option value="offline">Offline (pyttsx3)</option>
+            <option value="aws">Online (AWS Polly)</option>
+        </select>
+
+        <br><br>
+        <button onclick="scanFace()">📸 Scan Face</button>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((err) => {
+                alert('Camera access denied or not available.');
+                console.error(err);
+            });
+
+        function scanFace() {
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            const email = document.getElementById('visitor_email').value;
+            const name = document.getElementById('visitor_name').value;
+            const voiceMode = document.getElementById('voice_mode').value;
+
+            if (!email) {
+                alert("Please enter your email.");
+                return;
+            }
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const imageData = canvas.toDataURL('image/jpeg');
+
+            fetch('/scan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    image: imageData,
+                    email: email,
+                    name: name,
+                    voice_mode: voiceMode
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || 'Scan completed.');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error during face scan.');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!-- templates/scan_qr.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gate QR Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+  <h2>Scan Visitor QR Code</h2>
+  <div id="reader" style="width: 300px;"></div>
+  <div id="result"></div>
+
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      console.log(`QR matched = ${decodedText}`);
+
+      // Make request to Flask backend to validate QR
+      fetch(`/verify_qr/${decodedText}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === "approved") {
+            document.getElementById("result").innerHTML =
+              `<h3 style="color: green;">✅ Access Granted</h3><p>Welcome ${data.name}</p>`;
+          } else {
+            document.getElementById("result").innerHTML =
+              `<h3 style="color: red;">❌ Access Denied</h3><p>${data.message}</p>`;
+          }
+        })
+        .catch(err => {
+          document.getElementById("result").innerHTML = "❌ Error contacting server.";
+        });
+    }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess);
+  </script>
+</body>
+</html>

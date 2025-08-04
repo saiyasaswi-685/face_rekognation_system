@@ -1,0 +1,5 @@
+Flask
+boto3
+opencv-python
+uuid
+Pillow

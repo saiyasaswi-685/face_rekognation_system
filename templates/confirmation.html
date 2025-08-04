@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Code Generated</title>
+</head>
+<body>
+    <h2>QR Code Generated Successfully!</h2>
+    <p>Here is your QR Code:</p>
+    <img src="{{ url_for('static', filename='qr_codes/' + qr_image) }}" alt="QR Code">
+    <br><br>
+    <a href="/admin">Back to Dashboard</a>
+</body>
+</html>

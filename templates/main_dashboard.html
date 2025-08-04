@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Main Dashboard</title>
+
+  <!-- ✅ Step 3: Add Bootstrap CSS (for styles) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- 🧃 Navbar starts here -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <!-- Project Name or Logo -->
+      <a class="navbar-brand" href="#">Face Access System</a>
+
+      <!-- Hamburger Button for mobile view -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar Buttons -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="/main_dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/reports">Reports</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- 🍭 Navbar ends here -->
+
+  <!-- ✨ Now your main dashboard content will come here -->
+  <!-- 🧾 Visitor Table Section -->
+<div class="container mt-5">
+  <h3 class="mb-4">Visitor Details</h3>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>Face Image</th>
+          <th>Name</th>
+          <th>Time</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for visitor in visitors %}
+        <tr>
+          <td>
+  {% if visitor.image %}
+    <img src="{{ url_for('uploaded_file', filename=visitor.image) }}" width="80" height="80">
+  {% else %}
+    <span class="text-muted">No Image</span>
+  {% endif %}
+</td>
+
+          <td>{{ visitor.name }}</td>
+          <td>{{ visitor.formatted_time }}</td>  <!-- ✅ Shows readable time -->
+
+          <td>
+            {% if visitor.status == "Approved" %}
+              <span class="badge bg-success">Approved</span>
+            {% elif visitor.status == "Rejected" %}
+              <span class="badge bg-danger">Rejected</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% endif %}
+          </td>
+          
+          <td>
+  {% if visitor.status == "Pending" %}
+    <form action="/update_status" method="post" style="display:inline-block;">
+      <input type="hidden" name="visitor_id" value="{{ visitor.visitor_id }}">
+      <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+    </form>
+
+    <form action="/update_status" method="post" style="display:inline-block;">
+      <input type="hidden" name="visitor_id" value="{{ visitor.visitor_id }}">
+      <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+  {% else %}
+    <span class="text-muted">Action done</span>
+  {% endif %}
+</td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  <!-- ✅ Step 4: Add Bootstrap JS (to make navbar clickable in mobile) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

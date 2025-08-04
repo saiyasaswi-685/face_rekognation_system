@@ -1,0 +1,102 @@
+
+<!--result.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Recognition Result</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 350px;
+            max-width: 90%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        img {
+            border-radius: 15px;
+            margin-top: 20px;
+            max-width: 100%;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 25px;
+            background-color: #6c63ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #574b90;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .confidence-fill {
+            height: 14px;
+            border-radius: 10px;
+            background-color: #4CAF50;
+            width: {{ confidence }}%;
+            text-align: right;
+            padding-right: 5px;
+            color: white;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Scan Result</h1>
+
+        {% if match_image %}
+            <p><strong>Name:</strong> {{ name }}</p>
+            <p><strong>Confidence:</strong> {{ confidence }}%</p>
+
+            <div class="confidence-bar">
+                <div class="confidence-fill">{{ confidence }}%</div>
+            </div>
+
+            <img src="{{ match_image }}" alt="Matched Person">
+        {% else %}
+            <p><strong>No Match Found</strong></p>
+            <img src="https://via.placeholder.com/300x300?text=Unknown" alt="Unknown Person">
+        {% endif %}
+
+        <a href="/" class="btn">Back to Upload</a>
+    </div>
+</body>
+</html>

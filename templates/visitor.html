@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitor Photo</title>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center;">
+    <h1>👤 Latest Visitor Image</h1>
+    {% if image_url %}
+        <img src="{{ image_url }}" alt="Visitor Image" width="300" style="border: 2px solid #000;" />
+        <p>Image loaded from:<br><code>{{ image_url }}</code></p>
+    {% else %}
+        <p>No visitor image found.</p>
+    {% endif %}
+</body>
+</html>
